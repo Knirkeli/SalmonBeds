@@ -1,10 +1,11 @@
-import Image from "next/image";
+// app/page.tsx
+import LandingLayout from "./LandingLayout";
 import Lander from "./components/Lander";
 
 export default function Home() {
   return (
-    <main>
+    <LandingLayout>
       <Lander />
-    </main>
+    </LandingLayout>
   );
 }
