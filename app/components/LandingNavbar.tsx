@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 
-const links = [{ name: "Login", href: "/login" }];
+const links = [{ name: "Login", href: "/Login" }];
 
 export default function LandingNavbar() {
   const pathname = usePathname();
