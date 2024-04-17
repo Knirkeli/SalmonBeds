@@ -64,7 +64,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { setAccessToken, setUser } from "../shared/cookies";
 
-async function loginUser(email, password) {
+async function loginUser(email: string, password: string) {
   const response = await fetch(API_LOGIN, {
     method: "POST",
     headers: {
@@ -102,7 +102,7 @@ const LoginForm = () => {
     setPasswordError(password.length < 8);
   }, [password]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!emailError && !passwordError) {
       try {

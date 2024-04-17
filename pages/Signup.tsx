@@ -98,7 +98,7 @@
 import React, { useState, useEffect } from "react";
 import { API_REGISTER } from "../shared/apis";
 
-async function registerUser(payload) {
+async function registerUser(payload: any) {
   const response = await fetch(API_REGISTER, {
     method: "POST",
     headers: {
@@ -142,7 +142,7 @@ const SignupForm = () => {
     setPasswordError(password.length < 8);
   }, [password]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!emailError && !passwordError) {
       // Validate name

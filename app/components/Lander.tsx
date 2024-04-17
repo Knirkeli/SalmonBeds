@@ -45,7 +45,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { Card } from "/components/ui/card";
+import { Card } from "../../components/ui/card";
 import Link from "next/link";
 
 //fix sizing of cards. broken by Link

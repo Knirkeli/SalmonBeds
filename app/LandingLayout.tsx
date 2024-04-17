@@ -1,7 +1,7 @@
 // app/LandingLayout.tsx
 import React from "react";
-import LandingNavbar from "./components/LandingNavbar"; // replace with your actual LandingNavbar component
-import LandingFooter from "./components/LandingFooter"; // replace with your actual LandingFooter component
+import LandingNavbar from "./components/LandingNavbar";
+import LandingFooter from "./components/LandingFooter";
 
 const LandingLayout = ({ children }: { children: React.ReactNode }) => (
   <>
