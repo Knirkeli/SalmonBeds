@@ -7,7 +7,7 @@ import Image from "next/image";
 const links = [
   { name: "Home", href: "/" },
   { name: "Contact", href: "/contact" },
-  { name: "Login", href: "/login" },
+  { name: "Login", href: "/Login" },
 ];
 
 export default function Navbar() {

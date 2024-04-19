@@ -78,7 +78,7 @@ const Lander: React.FC = () => {
         </Link>
       </div>
       <div className="w-full md:w-1/2 p-5 xs:p-5 md:p-10 z-10 flex items-center justify-center md:mt-0 mt-0">
-        <Link href="/Managerprofile">
+        <Link href="/Manager">
           <Card className="w-full h-2/3 bg-gray-500 bg-opacity-55 text-center shadow-2xl hover:shadow-gray-200">
             <h2 className="text-2xl">Rent out?</h2>
             <p className="text-xl">
