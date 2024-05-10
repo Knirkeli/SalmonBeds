@@ -26,20 +26,22 @@ interface FetchData {
 
 const VenueCard: React.FC<{ venue: Venue }> = ({ venue }) => (
   <Link href={`/Venues/${venue.id}`} key={venue.id}>
-    <Card className="flex border border-gray-300 rounded p-4 mb-4 max-w-md m-auto">
-      <CardTitle className="text-lg font-semibold mb-2">{venue.name}</CardTitle>
-      <CardDescription className="text-base mb-2">
+    <Card className="flex flex-col border border-gray-300 rounded p-4 mb-4 max-w-md m-auto">
+      <CardTitle className="text-lg text-center font-semibold mb-2">
+        {venue.name}
+      </CardTitle>
+      {venue.media && venue.media.length > 0 && (
+        <div className="w-24 h-24 self-center overflow-hidden">
+          <img
+            className="w-full h-full object-cover"
+            src={venue.media[0].url}
+            alt={venue.media[0].alt}
+          />
+        </div>
+      )}
+      <CardDescription className="text-base mb-2 mt-auto">
         Price: {venue.price ? venue.price : "N/A"} NOK/Night
       </CardDescription>
-      {venue.media &&
-        venue.media.map((media: Media, index: number) => (
-          <img
-            className="w-20 h-25"
-            key={index}
-            src={media.url}
-            alt={media.alt}
-          />
-        ))}
     </Card>
   </Link>
 );
@@ -58,8 +60,8 @@ export default function Venues() {
   return (
     <>
       <Navbar />
-      <div className="flex flex-wrap justify-center space-x-4 space-y-4">
-        <h1 className="w-full text-center text-4xl">Venues</h1>
+      <h1 className="text-center text-4xl py-4">Venues</h1>
+      <div className="grid xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {data &&
           data.data.map((venue) => <VenueCard venue={venue} key={venue.id} />)}
       </div>
