@@ -146,6 +146,7 @@ function Manager() {
       const endpoint = `${API_PROFILES}/${userName}/venues`;
       const data = await apiRequest(endpoint);
       setVenues(data.data);
+      console.log("Venues:", data.data);
     };
 
     fetchProfile();

@@ -58,6 +58,7 @@ const Venue: FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [disabledDates, setDisabledDates] = useState<Date[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   function getDatesBetweenDates(startDate: Date, endDate: Date) {
     let dates = [];
@@ -74,6 +75,7 @@ const Venue: FC = () => {
 
   useEffect(() => {
     async function fetchVenueData() {
+      setIsLoading(true);
       const response = await fetch(`${API_VENUES}/${id}?_bookings=true`);
       const data = await response.json();
       console.log(data);
@@ -89,6 +91,7 @@ const Venue: FC = () => {
         .flat();
 
       setDisabledDates(disabledDates);
+      setIsLoading(false);
     }
 
     if (id) {
@@ -141,11 +144,13 @@ const Venue: FC = () => {
             </div>
             <div>
               <h2 className="text-2xl font-semibold mb-2 mt-4">Select Dates</h2>
-              <BookingCalendar
-                unavailableDates={disabledDates}
-                venueData={venueData}
-                id={id}
-              />
+              {!isLoading && ( // Add this line
+                <BookingCalendar
+                  unavailableDates={disabledDates}
+                  venueData={venueData}
+                  id={id}
+                />
+              )}
             </div>
           </div>
           <div>

@@ -21,6 +21,7 @@ function Calendar({
   console.log(props); // Log the props
   return (
     <DayPicker
+      disabled={unavailableDates}
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{
