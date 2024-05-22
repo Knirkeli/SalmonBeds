@@ -117,8 +117,8 @@ import { Button, buttonVariants } from "../../components/ui/button";
 
 function Manager() {
   const [profile, setProfile] = useState(null);
-  const [bookings, setBookings] = useState([]);
   const [venues, setVenues] = useState([]);
+  const [venueBookings, setVenueBookings] = useState([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -130,13 +130,13 @@ function Manager() {
       setProfile(data.data);
     };
 
-    const fetchBookings = async () => {
-      const userCookie = Cookies.get("user");
-      const user = JSON.parse(decodeURIComponent(userCookie));
-      const userName = user.name;
-      const endpoint = `${API_PROFILES}/${userName}/bookings?_venue=true`;
+    const fetchVenueBookings = async (venueId) => {
+      const endpoint = `${API_VENUES}/${venueId}?_bookings=true`;
       const data = await apiRequest(endpoint);
-      setBookings(data.data);
+      setVenueBookings((prevBookings) => [
+        ...prevBookings,
+        { venueId, bookings: data.data.bookings },
+      ]);
     };
 
     const fetchVenues = async () => {
@@ -146,11 +146,14 @@ function Manager() {
       const endpoint = `${API_PROFILES}/${userName}/venues`;
       const data = await apiRequest(endpoint);
       setVenues(data.data);
-      console.log("Venues:", data.data);
+
+      // Fetch bookings for each venue
+      data.data.forEach((venue) => {
+        fetchVenueBookings(venue.id);
+      });
     };
 
     fetchProfile();
-    fetchBookings();
     fetchVenues();
   }, []);
 
@@ -181,13 +184,19 @@ function Manager() {
         />
         <p>{profile.bio}</p>
         <h3>My Bookings</h3>
-        {bookings.length > 0 ? (
-          bookings.map((booking) => (
-            <div key={booking.id}>
-              <p>Venue: {booking.venue.name}</p>
-              <p>Start Date: {booking.dateFrom}</p>
-            </div>
-          ))
+        {venueBookings.length > 0 ? (
+          venueBookings.map((venue) =>
+            venues.find((v) => v.id === venue.venueId)
+              ? venue.bookings.map((booking) => (
+                  <div key={booking.id}>
+                    <p>
+                      Venue: {booking.venue ? booking.venue.name : "Unknown"}
+                    </p>
+                    <p>Start Date: {booking.dateFrom}</p>
+                  </div>
+                ))
+              : null
+          )
         ) : (
           <div>
             <p>No bookings yet</p>

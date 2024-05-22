@@ -1,5 +1,3 @@
-// Remember to fix the booked dates in the calendar
-
 import React, { useState, useEffect, FC } from "react";
 import { useRouter } from "next/router";
 import { API_VENUES, API_BOOKINGS } from "../../shared/apis";
@@ -17,87 +15,14 @@ import {
 import { Calendar } from "../../components/ui/calendar";
 import "../../app/globals.css";
 import WeatherIcon from "@/components/ui/weather";
-
-interface VenueData {
-  name: string;
-  description: string;
-  price: number;
-  maxGuests: number;
-  rating: number;
-  location: {
-    address: string;
-    city: string;
-    country: string;
-  };
-  meta: {
-    wifi: boolean;
-    parking: boolean;
-    breakfast: boolean;
-    pets: boolean;
-  };
-  media: {
-    url: string;
-    alt: string;
-  }[];
-  bookings: {
-    dateFrom: string;
-    dateTo: string;
-  }[];
-}
-
-interface CalendarProps {
-  selectedDays: Date[];
-  onDayClick: (date: Date) => void;
-  unavailableDates: Date[];
-}
+import { useVenueData } from "../../app/useFetch/useFetchId";
+import { useBooking } from "../../app/hooks/useBooking";
 
 const Venue: FC = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [venueData, setVenueData] = useState<VenueData | null>(null);
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [disabledDates, setDisabledDates] = useState<Date[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  function getDatesBetweenDates(startDate: Date, endDate: Date) {
-    let dates = [];
-    const currDate = new Date(startDate);
-    const lastDate = new Date(endDate);
-
-    while (currDate <= lastDate) {
-      dates.push(new Date(currDate));
-      currDate.setDate(currDate.getDate() + 1);
-    }
-
-    return dates;
-  }
-
-  useEffect(() => {
-    async function fetchVenueData() {
-      setIsLoading(true);
-      const response = await fetch(`${API_VENUES}/${id}?_bookings=true`);
-      const data = await response.json();
-      console.log(data);
-      setVenueData(data.data);
-
-      const disabledDates = data.data.bookings
-        .map((booking) =>
-          getDatesBetweenDates(
-            new Date(booking.dateFrom),
-            new Date(booking.dateTo)
-          )
-        )
-        .flat();
-
-      setDisabledDates(disabledDates);
-      setIsLoading(false);
-    }
-
-    if (id) {
-      fetchVenueData();
-    }
-  }, [id]);
+  const { venueData, startDate, endDate, disabledDates, isLoading } =
+    useVenueData(id);
 
   if (!venueData) {
     return <div>Loading...</div>;
@@ -182,42 +107,7 @@ function BookingCalendar({
   venueData: VenueData | null;
   id: string | string[] | undefined;
 }) {
-  const [dateRange, setDateRange] = useState<
-    { from: Date; to: Date } | undefined
-  >(undefined);
-
-  const handleBooking = async () => {
-    if (!dateRange) {
-      alert("Please select a date range first.");
-      return;
-    }
-
-    const token = getAccessToken();
-    const apiKey = getApiKey();
-
-    const response = await fetch(API_BOOKINGS, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        "X-Noroff-API-Key": apiKey,
-      },
-      body: JSON.stringify({
-        dateFrom: dateRange.from.toISOString(),
-        dateTo: dateRange.to.toISOString(),
-        guests: venueData.maxGuests, // Use the actual number of guests from venue data
-        venueId: id, // Use the actual venue ID from router query
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log(data);
-    window.alert("Booking successful!");
-  };
+  const { dateRange, setDateRange, handleBooking } = useBooking(venueData, id);
 
   return (
     <div className="flex items-center space-x-4">

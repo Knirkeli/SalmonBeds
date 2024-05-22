@@ -6,6 +6,7 @@ import "../../app/globals.css";
 import Link from "next/link";
 import Navbar from "../../app/components/Navbar";
 import Footer from "../../app/components/Footer";
+import { useFetchVenues } from "../../app/useFetch/useFetchVenues";
 
 interface Media {
   url: string;
@@ -43,45 +44,22 @@ const VenueCard: React.FC<{ venue: Venue }> = ({ venue }) => (
 );
 
 export default function Venues() {
-  const [venues, setVenues] = useState<Venue[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
+  const { data, isLoading, isError } = useFetchVenues(); // Use your custom hook
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    fetch(API_VENUES)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const sortedVenues = data.data.sort(
-          (a, b) => new Date(b.created) - new Date(a.created)
-        );
-        setVenues(sortedVenues);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error(
-          "There has been a problem with your fetch operation:",
-          error
-        );
-        setIsError(true);
-        setIsLoading(false);
-      });
-  }, []);
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (isError) {
+  if (isError || !data) {
     return <div>Error loading data.</div>;
   }
 
-  // Filter the venues based on the search term
-  const filteredVenues = venues.filter((venue) =>
+  // Sort and filter the venues based on the search term
+  const sortedVenues = data.sort(
+    (a, b) => new Date(b.created) - new Date(a.created)
+  );
+  const filteredVenues = sortedVenues.filter((venue) =>
     venue.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
