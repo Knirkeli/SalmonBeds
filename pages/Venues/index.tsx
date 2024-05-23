@@ -7,6 +7,7 @@ import Link from "next/link";
 import Navbar from "../../app/components/Navbar";
 import Footer from "../../app/components/Footer";
 import { useFetchVenues } from "../../app/useFetch/useFetchVenues";
+import { Button } from "@/components/ui/button";
 
 interface Media {
   url: string;
@@ -44,8 +45,9 @@ const VenueCard: React.FC<{ venue: Venue }> = ({ venue }) => (
 );
 
 export default function Venues() {
-  const { data, isLoading, isError } = useFetchVenues(); // Use your custom hook
+  const { data, isLoading, isError } = useFetchVenues();
   const [searchTerm, setSearchTerm] = useState("");
+  const [displayCount, setDisplayCount] = useState(50); // New state variable
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -67,7 +69,7 @@ export default function Venues() {
     <>
       <Navbar />
       <h1 className="text-center text-4xl py-4">Venues</h1>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         <input
           type="text"
           placeholder="Search..."
@@ -75,10 +77,26 @@ export default function Venues() {
           onChange={(event) => setSearchTerm(event.target.value)}
         />
         <div className="grid xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredVenues.map((venue) => (
-            <VenueCard venue={venue} key={venue.id} />
-          ))}
+          {filteredVenues.slice(0, displayCount).map(
+            (
+              venue // Only display up to displayCount venues
+            ) => (
+              <VenueCard venue={venue} key={venue.id} />
+            )
+          )}
         </div>
+        {displayCount < filteredVenues.length && (
+          <div className="text-center my-4">
+            {" "}
+            {/* Add text-center to this div */}
+            <Button
+              variant="outline"
+              onClick={() => setDisplayCount(displayCount + 50)}
+            >
+              See more venues
+            </Button>
+          </div>
+        )}
       </div>
       <Footer />
     </>
