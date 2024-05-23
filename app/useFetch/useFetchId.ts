@@ -52,6 +52,7 @@ export function useVenueData(id: string) {
       const response = await fetch(`${API_VENUES}/${id}?_bookings=true`);
       const data = await response.json();
       setVenueData(data.data);
+      console.log(data); // Log the fetched data
 
       const disabledDates = data.data.bookings
         .map((booking) =>

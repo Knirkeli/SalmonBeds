@@ -47,6 +47,7 @@ import React from "react";
 import Image from "next/image";
 import { Card } from "../../components/ui/card";
 import Link from "next/link";
+import WeatherIcon from "@/components/ui/weather";
 
 //fix sizing of cards. broken by Link
 
@@ -65,14 +66,8 @@ const Lander: React.FC = () => {
             <h2 className="text-3xl">Find a place to stay</h2>
             <p className="text-xl">Pick a bed close to your fishing spot!</p>
             <Card className="bg-gray-300 bg-opacity-75 text-center">
-              <h3>Weather</h3>
-              <Image
-                src="/vannføring.png"
-                alt="Rauma vannføring"
-                height={150}
-                width={150}
-                objectFit="cover"
-              />
+              <h3>Weather at our most popular location</h3>
+              <WeatherIcon />
             </Card>
           </Card>
         </Link>

@@ -107,55 +107,16 @@
 // export default Manager;
 
 import { useEffect, useState } from "react";
-import { apiRequest, API_PROFILES, API_VENUES } from "../../shared/apis";
 import Cookies from "js-cookie";
 import Router from "next/router";
 import Footer from "@/app/components/Footer";
 import Navbar from "@/app/components/Navbar";
 import "../../app/globals.css";
 import { Button, buttonVariants } from "../../components/ui/button";
+import { useManagerData } from "../../app/hooks/useManagerData";
 
 function Manager() {
-  const [profile, setProfile] = useState(null);
-  const [venues, setVenues] = useState([]);
-  const [venueBookings, setVenueBookings] = useState([]);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const userCookie = Cookies.get("user") ?? "";
-      const user = JSON.parse(decodeURIComponent(userCookie));
-      const userName = user.name;
-      const endpoint = `${API_PROFILES}/${userName}`;
-      const data = await apiRequest(endpoint);
-      setProfile(data.data);
-    };
-
-    const fetchVenueBookings = async (venueId) => {
-      const endpoint = `${API_VENUES}/${venueId}?_bookings=true`;
-      const data = await apiRequest(endpoint);
-      setVenueBookings((prevBookings) => [
-        ...prevBookings,
-        { venueId, bookings: data.data.bookings },
-      ]);
-    };
-
-    const fetchVenues = async () => {
-      const userCookie = Cookies.get("user");
-      const user = JSON.parse(decodeURIComponent(userCookie));
-      const userName = user.name;
-      const endpoint = `${API_PROFILES}/${userName}/venues`;
-      const data = await apiRequest(endpoint);
-      setVenues(data.data);
-
-      // Fetch bookings for each venue
-      data.data.forEach((venue) => {
-        fetchVenueBookings(venue.id);
-      });
-    };
-
-    fetchProfile();
-    fetchVenues();
-  }, []);
+  const { profile, bookings, venues } = useManagerData();
 
   const handleDelete = async (id) => {
     await apiRequest(`${API_VENUES}/${id}`, "DELETE");
@@ -184,19 +145,20 @@ function Manager() {
         />
         <p>{profile.bio}</p>
         <h3>My Bookings</h3>
-        {venueBookings.length > 0 ? (
-          venueBookings.map((venue) =>
-            venues.find((v) => v.id === venue.venueId)
-              ? venue.bookings.map((booking) => (
-                  <div key={booking.id}>
-                    <p>
-                      Venue: {booking.venue ? booking.venue.name : "Unknown"}
-                    </p>
-                    <p>Start Date: {booking.dateFrom}</p>
-                  </div>
-                ))
-              : null
-          )
+        {bookings.length > 0 ? (
+          bookings.map((booking) => {
+            const date = new Date(booking.dateFrom);
+            const formattedDate = `${date.getDate()}-${
+              date.getMonth() + 1
+            }-${date.getFullYear()}`;
+
+            return (
+              <div key={booking.id}>
+                <p>Venue: {booking.venue.name}</p>
+                <p>Start Date: {formattedDate}</p>
+              </div>
+            );
+          })
         ) : (
           <div>
             <p>No bookings yet</p>
@@ -228,6 +190,9 @@ function Manager() {
               >
                 Delete
               </Button>
+              <Button onClick={() => Router.push(`/Venues/${venue.id}`)}>
+                View Venue
+              </Button>
             </div>
           ))
         ) : (
@@ -241,3 +206,5 @@ function Manager() {
 }
 
 export default Manager;
+
+// remember to fix delete of the venues
