@@ -19,9 +19,14 @@ const Logout = () => {
   return (
     <>
       <Navbar />
-      <div>
-        Logout Page
-        <Button onClick={handleLogout}>Logout</Button>
+      <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded shadow-md text-center">
+        <h2 className="text-2xl mb-4">Logout Page</h2>
+        <Button
+          onClick={handleLogout}
+          className="bg-blue-500 text-white rounded px-3 py-2"
+        >
+          Logout
+        </Button>
       </div>
       <Footer />
     </>

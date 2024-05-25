@@ -162,8 +162,8 @@ const Venue: FC = () => {
       <Navbar />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 mb-16">
         <h1 className="text-4xl font-bold mb-4">{venueData.name}</h1>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 lg:mr-8">
+        <div className="flex flex-col md:flex-row">
+          <div className="w-full md:w-2/3 pr-4">
             <Carousel className="w-full pb-6">
               <CarouselContent>
                 {venueData?.media.map((media, index) => (
@@ -181,27 +181,26 @@ const Venue: FC = () => {
               <CarouselPrevious>Previous</CarouselPrevious>
               <CarouselNext>Next</CarouselNext>
             </Carousel>
-            <div className="grid lg:grid-cols-2 gap-4">
-              <div>
-                <h2 className="text-2xl font-semibold mb-2">Select Dates</h2>
-                {!isLoading && (
-                  <BookingCalendar
-                    unavailableDates={disabledDates}
-                    venueData={venueData}
-                    id={id}
-                  />
-                )}
-              </div>
-              <div className="text-2xl font-semibold mb-2">
-                <h2>Forcast</h2>
-                <WeatherIcon />
-              </div>
-            </div>
           </div>
-          <div className="lg:col-span-1 lg:ml-8">
+          <div className="w-full md:w-1/3 pl-4 flex flex-col items-center">
+            {/* <h2 className="text-2xl font-semibold mb-2">Select Dates</h2> */}
+            {!isLoading && (
+              <BookingCalendar
+                unavailableDates={disabledDates}
+                venueData={venueData}
+                id={id}
+              />
+            )}
+          </div>
+        </div>
+        <div className="grid gap-4">
+          <div>
             <VenueDetails venueData={venueData} />
           </div>
         </div>
+      </div>
+      <div className="text-2xl font-semibold mb-2">
+        <WeatherIcon />
       </div>
       <Footer />
     </>

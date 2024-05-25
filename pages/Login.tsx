@@ -183,23 +183,41 @@ const LoginForm = () => {
   return (
     <>
       <Navbar />
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-lg mx-auto mt-10 p-6 bg-white rounded shadow-md"
+      >
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
+          className="w-full px-3 py-2 border rounded mt-2"
         />
-        {emailError && <p>Please enter a valid Noroff email.</p>}
+        {emailError && (
+          <p className="text-red-500">Please enter a valid Noroff email.</p>
+        )}
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
+          className="w-full px-3 py-2 border rounded mt-2"
         />
-        {passwordError && <p>Password must be at least 8 characters long.</p>}
-        <Button type="submit">Login</Button>
-      </form>{" "}
+        {passwordError && (
+          <p className="text-red-500">
+            Password must be at least 8 characters long.
+          </p>
+        )}
+        <Button
+          type="submit"
+          className="mt-4 bg-blue-500 text-white rounded px-3 py-2"
+        >
+          Login
+        </Button>
+      </form>
       <Footer />
     </>
   );
