@@ -66,11 +66,26 @@
 
 // export default BookingCalendar;
 
-import { FC, useState, useEffect, useRef } from "react";
+import React, { FC, useState, useEffect, useRef, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "../../components/ui/calendar";
 import { useBooking } from "../../app/hooks/useBooking";
 import { Alert, AlertTitle, AlertDescription } from "../../components/ui/alert";
+import Cookies from "js-cookie";
+import { PopoverTrigger } from "@/components/ui/popover";
+import { PersonIcon } from "@radix-ui/react-icons";
+
+const Popover = React.lazy(() =>
+  import("@/components/ui/popover").then((module) => ({
+    default: module.Popover,
+  }))
+);
+const PopoverContent = React.lazy(() =>
+  import("@/components/ui/popover").then((module) => ({
+    default: module.PopoverContent,
+  }))
+);
+const LoginForm = React.lazy(() => import("./Login"));
 
 interface BookingCalendarProps {
   unavailableDates: Date[];
@@ -143,6 +158,9 @@ const BookingCalendar: FC<BookingCalendarProps> = ({
     }
   };
 
+  // Check if accessToken cookie exists
+  const isLoggedIn = !!Cookies.get("accessToken");
+
   return (
     <div className="relative flex flex-col items-center">
       {showAlert && (
@@ -166,14 +184,32 @@ const BookingCalendar: FC<BookingCalendarProps> = ({
           className="rounded-md border shadow mb-4 shadow-lg"
         />
       </div>
-      <Button
-        className="shadow-lg"
-        variant="default"
-        size="default"
-        onClick={handleBookingWithCheck}
-      >
-        Book Now
-      </Button>
+      <div>
+        {isLoggedIn ? (
+          <Button
+            className="shadow-lg"
+            variant="default"
+            size="default"
+            onClick={handleBookingWithCheck}
+          >
+            Book Now
+          </Button>
+        ) : (
+          <Suspense fallback={<div>Loading...</div>}>
+            <Popover>
+              <PopoverTrigger
+                as="div"
+                className="shadow-lg bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 cursor-pointer"
+              >
+                Log In
+              </PopoverTrigger>
+              <PopoverContent className="bg-white shadow-lg rounded-lg p-4">
+                <LoginForm />
+              </PopoverContent>
+            </Popover>
+          </Suspense>
+        )}
+      </div>
     </div>
   );
 };

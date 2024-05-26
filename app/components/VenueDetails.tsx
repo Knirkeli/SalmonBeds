@@ -1,5 +1,5 @@
+"use client";
 import React, { FC } from "react";
-import { VenueData } from "path-to-your-venue-data-type";
 
 interface VenueDetailsProps {
   venueData: VenueData;

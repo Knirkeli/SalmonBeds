@@ -41,5 +41,5 @@ export const useManagerData = () => {
     fetchVenues();
   }, []);
 
-  return { profile, bookings, venues };
+  return { profile, bookings, venues, setVenues };
 };

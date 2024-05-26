@@ -1,20 +1,34 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { PopoverTrigger } from "@/components/ui/popover";
+import { PersonIcon } from "@radix-ui/react-icons";
+import Cookies from "js-cookie";
+
+const Popover = React.lazy(() =>
+  import("@/components/ui/popover").then((module) => ({
+    default: module.Popover,
+  }))
+);
+const PopoverContent = React.lazy(() =>
+  import("@/components/ui/popover").then((module) => ({
+    default: module.PopoverContent,
+  }))
+);
+const LoginForm = React.lazy(() => import("./Login"));
+const Logout = React.lazy(() => import("./LogOut"));
+const SignupForm = React.lazy(() => import("./SignupForm"));
 
 const links = [
   { name: "Home", href: "/" },
   { name: "Contact", href: "/contact" },
-  { name: "Login", href: "/Login" },
-  { name: "Profile", href: "/Profile" },
-  { name: "Manager", href: "/Manager" },
-  { name: "Log out", href: "/Logout" },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
+  const accessToken = Cookies.get("accessToken");
   return (
     <header className="border-b">
       <div className="flex items center justify-between mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl">
@@ -31,9 +45,7 @@ export default function Navbar() {
             <div
               key={idx}
               className={
-                idx === 0 || idx === links.length - 1
-                  ? "hidden lg:flex"
-                  : "flex"
+                idx === 0 || idx === links.length - 1 ? "lg:flex" : "flex"
               }
             >
               {pathname === link.href ? (
@@ -54,19 +66,68 @@ export default function Navbar() {
             </div>
           ))}
         </nav>
-        <div className="flex divide-x border-r sm:border-l">
-          {/* <Link href="/cart">
-            <Button
-              variant={"default"}
-              className="flex flex-col gap-y-1.5 h-12 w-12 sm:h-20 sm:w-20 md:h-34 md:w-24 round"
-            >
-              <ShoppingCart />
-              <span className="text-xs font-semibold sm:block">
-                Cart {isClient ? `(${totalItems})` : ""}
-              </span>
-            </Button>
-          </Link> */}
-        </div>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Popover>
+            <PopoverTrigger>
+              <PersonIcon className="hover:text-blue-500 cursor-pointer text-4xl mb-2 mt-auto" />
+            </PopoverTrigger>
+            <PopoverContent className="bg-white shadow-lg rounded-lg w-auto">
+              {accessToken ? (
+                <>
+                  <Link
+                    href="/Manager"
+                    className="hover:text-blue-500 cursor-pointer text-lg mr-4"
+                  >
+                    Profile
+                  </Link>
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Popover>
+                      <PopoverTrigger
+                        as="div"
+                        className="hover:text-blue-500 cursor-pointer text-lg"
+                      >
+                        Log out
+                      </PopoverTrigger>
+                      <PopoverContent className="bg-white shadow-lg rounded-lg p-4">
+                        <Logout />
+                      </PopoverContent>
+                    </Popover>
+                  </Suspense>
+                </>
+              ) : (
+                <>
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Popover>
+                      <PopoverTrigger
+                        as="div"
+                        className="hover:text-blue-500 cursor-pointer text-lg mr-4"
+                      >
+                        Log in
+                      </PopoverTrigger>
+                      <PopoverContent className="bg-white shadow-lg rounded-lg p-4">
+                        <LoginForm />
+                      </PopoverContent>
+                    </Popover>
+                  </Suspense>
+
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Popover>
+                      <PopoverTrigger
+                        as="div"
+                        className="hover:text-blue-500 cursor-pointer text-lg"
+                      >
+                        Sign up
+                      </PopoverTrigger>
+                      <PopoverContent className="bg-white shadow-lg rounded-lg">
+                        <SignupForm />
+                      </PopoverContent>
+                    </Popover>
+                  </Suspense>
+                </>
+              )}
+            </PopoverContent>
+          </Popover>
+        </Suspense>
       </div>
     </header>
   );

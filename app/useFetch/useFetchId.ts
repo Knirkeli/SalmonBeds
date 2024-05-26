@@ -51,19 +51,24 @@ export function useVenueData(id: string) {
       setIsLoading(true);
       const response = await fetch(`${API_VENUES}/${id}?_bookings=true`);
       const data = await response.json();
-      setVenueData(data.data);
-      console.log(data); // Log the fetched data
-
-      const disabledDates = data.data.bookings
-        .map((booking) =>
-          getDatesBetweenDates(
-            new Date(booking.dateFrom),
-            new Date(booking.dateTo)
+    
+      // Check if the media array is not empty
+      if (data.data.media.length > 0) {
+        setVenueData(data.data);
+        console.log(data); // Log the fetched data
+    
+        const disabledDates = data.data.bookings
+          .map((booking) =>
+            getDatesBetweenDates(
+              new Date(booking.dateFrom),
+              new Date(booking.dateTo)
+            )
           )
-        )
-        .flat();
-
-      setDisabledDates(disabledDates);
+          .flat();
+    
+        setDisabledDates(disabledDates);
+      }
+    
       setIsLoading(false);
     }
 

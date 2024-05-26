@@ -47,6 +47,7 @@ export function setUser(user: any) {
       name: user.name,
       email: user.email,
       avatar: encodeURIComponent(user.avatar.url),
+      venueManager: user.venueManager, // Add the venueManager property
     }),
     { secure: true, sameSite: "strict" }
   );

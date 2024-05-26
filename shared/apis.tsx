@@ -60,7 +60,7 @@ export const API_BOOKINGS = `${API_BASE_URL}/holidaze/bookings`;
 
 export const API_REGISTER = `${API_BASE_URL}/auth/register`;
 
-export const API_LOGIN = `${API_BASE_URL}/auth/login`;
+export const API_LOGIN = `${API_BASE_URL}/auth/login?_holidaze=true`;
 
 export const API_KEY = `${API_BASE_URL}/auth/create-api-key`;
 
