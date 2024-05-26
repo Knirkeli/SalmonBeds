@@ -7,9 +7,16 @@ import { DayPicker } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
-interface CalendarProps extends React.ComponentProps<typeof DayPicker> {
+interface CalendarProps {
+  className?: string;
   unavailableDates?: Date[];
   mode?: "range" | "single" | "multiple";
+  showOutsideDays?: boolean;
+  classNames?: Record<string, string>;
+  selected?: { from: Date; to: Date } | undefined; // Add this line
+  onSelect?: React.Dispatch<
+    React.SetStateAction<{ from: Date; to: Date } | undefined>
+  >; // Add this line if onSelect is not defined
 }
 
 function Calendar({
@@ -18,7 +25,7 @@ function Calendar({
   showOutsideDays = true,
   unavailableDates,
   ...props
-}: CalendarProps) {
+}: CalendarProps): React.JSX.Element {
   console.log(props); // Log the props
   return (
     <DayPicker

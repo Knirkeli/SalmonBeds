@@ -115,7 +115,7 @@ function Edit() {
     lng,
   ]);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
     const updatedVenue = {

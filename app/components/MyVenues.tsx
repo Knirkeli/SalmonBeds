@@ -56,8 +56,15 @@ import { Button, buttonVariants } from "../../components/ui/button";
 import Create from "./CreateVenue";
 import Router from "next/router";
 import Modal from "react-modal";
+import { VenueData } from "../hooks/useBooking";
 
-export function MyVenues({ venues, handleEdit, handleDelete }) {
+interface MyVenuesProps {
+  venues: VenueData[];
+  handleEdit: (id: string) => void;
+  handleDelete: (id: string) => void;
+}
+
+export function MyVenues({ venues, handleEdit, handleDelete }: MyVenuesProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const closeModal = () => {
@@ -65,7 +72,7 @@ export function MyVenues({ venues, handleEdit, handleDelete }) {
   };
 
   return (
-    <div className="shadow-xl p-4 mt-4 mb-16 flex flex-col items-center justify-center">
+    <div className="shadow-xl p-4 mt-6 mb-16 flex flex-col items-center justify-center">
       <h3 className="text-2xl font-bold mb-2">My Venues</h3>
       {venues.length > 0 ? (
         venues.map((venue) => (
@@ -79,24 +86,16 @@ export function MyVenues({ venues, handleEdit, handleDelete }) {
               />
             )}
             <Button
-              variant={buttonVariants.secondary}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-              onClick={() => handleEdit(venue.id)}
+              onClick={() => venue.id && handleEdit(venue.id.toString())}
             >
               Edit
             </Button>
             <Button
-              variant={buttonVariants.danger}
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2"
-              onClick={() => handleDelete(venue.id)}
+              onClick={() => venue.id && handleDelete(venue.id.toString())}
             >
               Delete
-            </Button>
-            <Button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => Router.push(`/Venues/${venue.id}`)}
-            >
-              View Venue
             </Button>
           </div>
         ))

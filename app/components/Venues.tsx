@@ -49,7 +49,7 @@ const VenueCard: React.FC<{ venue: Venue }> = ({ venue }) => {
   );
 };
 
-export default function Venues({ router }) {
+export default function Venues({}) {
   const { data, isLoading, isError } = useFetchVenues();
   const [searchTerm, setSearchTerm] = useState("");
   const [displayCount, setDisplayCount] = useState(50); // New state variable
@@ -64,7 +64,7 @@ export default function Venues({ router }) {
 
   // Sort and filter the venues based on the search term
   const sortedVenues = data.sort(
-    (a, b) => new Date(b.created) - new Date(a.created)
+    (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
   );
   const filteredVenues = sortedVenues.filter((venue) =>
     venue.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -86,7 +86,10 @@ export default function Venues({ router }) {
             (
               venue // Only display up to displayCount venues
             ) => (
-              <VenueCard venue={venue} key={venue.id} />
+              <VenueCard
+                venue={{ ...venue, created: String(venue.created) }}
+                key={venue.id}
+              />
             )
           )}
         </div>

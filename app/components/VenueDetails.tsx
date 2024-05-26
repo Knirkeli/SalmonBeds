@@ -1,5 +1,6 @@
 "use client";
 import React, { FC } from "react";
+import { VenueData } from "../hooks/useBooking";
 
 interface VenueDetailsProps {
   venueData: VenueData;

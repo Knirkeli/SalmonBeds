@@ -22,9 +22,10 @@ import VenueDetails from "../../app/components/VenueDetails";
 
 const Venue: FC = () => {
   const router = useRouter();
-  const { id } = router.query;
-  const { venueData, startDate, endDate, disabledDates, isLoading } =
-    useVenueData(id);
+  const id = Array.isArray(router.query.id)
+    ? router.query.id[0]
+    : router.query.id || "";
+  const { venueData, disabledDates, isLoading } = useVenueData(id);
 
   if (!venueData) {
     return <div>Loading...</div>;
@@ -56,7 +57,6 @@ const Venue: FC = () => {
             </Carousel>
           </div>
           <div className="w-full md:w-1/3 pl-4 flex flex-col items-center">
-            {/* <h2 className="text-2xl font-semibold mb-2">Select Dates</h2> */}
             {!isLoading && (
               <BookingCalendar
                 unavailableDates={disabledDates}

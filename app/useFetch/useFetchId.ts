@@ -58,7 +58,7 @@ export function useVenueData(id: string) {
         console.log(data); // Log the fetched data
     
         const disabledDates = data.data.bookings
-          .map((booking) =>
+          .map((booking: { dateFrom: string | number | Date; dateTo: string | number | Date; }) =>
             getDatesBetweenDates(
               new Date(booking.dateFrom),
               new Date(booking.dateTo)

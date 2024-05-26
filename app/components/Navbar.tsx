@@ -82,11 +82,10 @@ export default function Navbar() {
                   </Link>
                   <Suspense fallback={<div>Loading...</div>}>
                     <Popover>
-                      <PopoverTrigger
-                        as="div"
-                        className="hover:text-blue-500 cursor-pointer text-lg"
-                      >
-                        Log out
+                      <PopoverTrigger>
+                        <div className="hover:text-blue-500 cursor-pointer text-lg">
+                          Log out
+                        </div>
                       </PopoverTrigger>
                       <PopoverContent className="bg-white shadow-lg rounded-lg p-4">
                         <Logout />
@@ -98,11 +97,10 @@ export default function Navbar() {
                 <>
                   <Suspense fallback={<div>Loading...</div>}>
                     <Popover>
-                      <PopoverTrigger
-                        as="div"
-                        className="hover:text-blue-500 cursor-pointer text-lg mr-4"
-                      >
-                        Log in
+                      <PopoverTrigger>
+                        <div className="hover:text-blue-500 cursor-pointer text-lg">
+                          Log in
+                        </div>
                       </PopoverTrigger>
                       <PopoverContent className="bg-white shadow-lg rounded-lg p-4">
                         <LoginForm />
@@ -112,11 +110,10 @@ export default function Navbar() {
 
                   <Suspense fallback={<div>Loading...</div>}>
                     <Popover>
-                      <PopoverTrigger
-                        as="div"
-                        className="hover:text-blue-500 cursor-pointer text-lg"
-                      >
-                        Sign up
+                      <PopoverTrigger>
+                        <div className="hover:text-blue-500 cursor-pointer text-lg">
+                          Sign up
+                        </div>
                       </PopoverTrigger>
                       <PopoverContent className="bg-white shadow-lg rounded-lg">
                         <SignupForm />

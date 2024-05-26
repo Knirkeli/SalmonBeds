@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import { Key, ReactNode, useState } from 'react';
 import { getAccessToken, getApiKey } from "../../shared/cookies";
 import { API_BOOKINGS } from "../../shared/apis";
 
 export interface VenueData {
+  id: Key | null | undefined;
+  media: any;
+  name: ReactNode;
+  location: any;
+  meta: any;
+  rating: ReactNode;
+  price: ReactNode;
+  description: ReactNode;
   maxGuests: any; // Replace any with the actual type of maxGuests
 }
 
@@ -16,7 +24,7 @@ export function useBooking(venueData: { maxGuests: any; }, id: string | string[]
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date } | undefined>(undefined);
 
   const handleBooking = async () => {
-    if (!dateRange) {
+    if (!venueData || !dateRange) {
       alert("Please select a date range first.");
       return;
     }

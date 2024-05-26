@@ -9,6 +9,7 @@ interface Media {
 }
 
 interface Venue {
+  created: string | number | Date;
   id: string;
   name: string;
   price: number;
@@ -16,6 +17,7 @@ interface Venue {
 }
 
 interface FetchResult {
+  meta: any;
   data: Venue[];
 }
 

@@ -1,11 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useState, FunctionComponent } from "react";
 import { useRouter } from "next/router";
 import { apiRequest, API_VENUES } from "../../shared/apis";
 import { Button, buttonVariants } from "../../components/ui/button";
 import "../../app/globals.css";
 
-function Create({ closeModal }) {
+interface CreateProps {
+  closeModal: () => void;
+}
+
+const Create: FunctionComponent<CreateProps> = ({ closeModal }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -25,7 +29,7 @@ function Create({ closeModal }) {
   const [lng, setLng] = useState(0);
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
     const venue = {
@@ -215,6 +219,6 @@ function Create({ closeModal }) {
       </div>
     </>
   );
-}
+};
 
 export default Create;

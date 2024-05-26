@@ -20,16 +20,36 @@ export const useManagerData = () => {
 
     const fetchBookings = async () => {
       const userCookie = Cookies.get("user");
-      const user = JSON.parse(decodeURIComponent(userCookie));
+      if (!userCookie) {
+        console.error('User cookie not found');
+        return;
+      }
+      let user;
+      try {
+        user = JSON.parse(decodeURIComponent(userCookie));
+      } catch (error) {
+        console.error('Error parsing user cookie', error);
+        return;
+      }
       const userName = user.name;
       const endpoint = `${API_PROFILES}/${userName}/bookings?_venue=true`;
       const data = await apiRequest(endpoint);
       setBookings(data.data);
     };
-
+    
     const fetchVenues = async () => {
       const userCookie = Cookies.get("user");
-      const user = JSON.parse(decodeURIComponent(userCookie));
+      if (!userCookie) {
+        console.error('User cookie not found');
+        return;
+      }
+      let user;
+      try {
+        user = JSON.parse(decodeURIComponent(userCookie));
+      } catch (error) {
+        console.error('Error parsing user cookie', error);
+        return;
+      }
       const userName = user.name;
       const endpoint = `${API_PROFILES}/${userName}/venues`;
       const data = await apiRequest(endpoint);

@@ -1,7 +1,19 @@
 import { Button } from "../../components/ui/button";
 import Router from "next/router";
 
-export function MyBookings({ bookings }) {
+interface Booking {
+  id: string;
+  dateFrom: string;
+  venue: {
+    name: string;
+  };
+}
+
+interface MyBookingsProps {
+  bookings: Booking[];
+}
+
+export function MyBookings({ bookings }: MyBookingsProps) {
   return (
     <div className="shadow-xl p-4 mt-4 md:mb-16">
       <div className="text-center">

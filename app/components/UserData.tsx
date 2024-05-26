@@ -26,7 +26,7 @@
 import { Button, buttonVariants } from "../../components/ui/button";
 import Router from "next/router";
 
-export function ProfileInfo({ profile }) {
+export function ProfileInfo({ profile }: { profile: any }) {
   return (
     <div className="shadow-xl flex flex-col items-center">
       <h1 className="text-4xl font-bold mb-4 text-center w-full">
@@ -42,13 +42,13 @@ export function ProfileInfo({ profile }) {
           <p className="text-lg mb-4">{profile.bio}</p>
           <p className="text-lg mb-4">{profile.email}</p>
         </div>
-        <Button
+        {/* <Button
           variant={buttonVariants.secondary}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 md:mt-0 md:self-end"
           onClick={() => Router.push(`/EditProfile`)}
         >
           Edit profile
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

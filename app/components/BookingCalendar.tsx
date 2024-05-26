@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect, useRef, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "../../components/ui/calendar";
-import { useBooking } from "../../app/hooks/useBooking";
+import { VenueData, useBooking } from "../../app/hooks/useBooking";
 import { Alert, AlertTitle, AlertDescription } from "../../components/ui/alert";
 import Cookies from "js-cookie";
 import { PopoverTrigger } from "@/components/ui/popover";
@@ -21,7 +21,7 @@ const LoginForm = React.lazy(() => import("./Login"));
 
 interface BookingCalendarProps {
   unavailableDates: Date[];
-  venueData: VenueData | null;
+  venueData: VenueData;
   id: string | string[] | undefined;
 }
 
@@ -112,7 +112,7 @@ const BookingCalendar: FC<BookingCalendarProps> = ({
           mode="range"
           selected={dateRange}
           onSelect={setDateRange}
-          unavailableDates={finalUnavailableDates} // Use finalUnavailableDates here
+          unavailableDates={finalUnavailableDates}
           className="rounded-md border shadow mb-4 shadow-lg"
         />
       </div>

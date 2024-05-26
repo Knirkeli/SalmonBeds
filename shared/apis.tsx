@@ -66,8 +66,8 @@ export const API_KEY = `${API_BASE_URL}/auth/create-api-key`;
 
 export async function apiRequest(
   endpoint: string,
-  method = "GET",
-  body = null
+  method: string = "GET",
+  body: { [key: string]: any } | null = null
 ) {
   const accessToken = Cookies.get("accessToken");
   const apiKey = Cookies.get("SalmonKey");
