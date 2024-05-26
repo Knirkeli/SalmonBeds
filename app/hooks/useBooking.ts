@@ -12,6 +12,10 @@ export interface VenueData {
   price: ReactNode;
   description: ReactNode;
   maxGuests: any; // Replace any with the actual type of maxGuests
+  bookings: {
+    dateFrom: string;
+    dateTo: string;
+  }[];
 }
 
  interface BookingCalendarProps {
