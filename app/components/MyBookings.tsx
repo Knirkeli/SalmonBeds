@@ -94,7 +94,7 @@ export function MyBookings({ bookings }) {
           <p className="text-lg">No bookings yet</p>
           <Button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => Router.push("/Venues")}
+            onClick={() => Router.push("/")}
           >
             Find a venue
           </Button>

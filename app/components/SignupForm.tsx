@@ -79,6 +79,10 @@ const SignupForm = () => {
         const data = await registerUser(payload);
         console.log(data);
         // Use the returned data to log the user in
+
+        // Display a success message and reload the page
+        window.alert("User created successfully!");
+        window.location.reload();
       } catch (error) {
         console.error(error);
       }
