@@ -2,7 +2,17 @@ import { useState } from 'react';
 import { getAccessToken, getApiKey } from "../../shared/cookies";
 import { API_BOOKINGS } from "../../shared/apis";
 
-export function useBooking(venueData, id) {
+export interface VenueData {
+  maxGuests: any; // Replace any with the actual type of maxGuests
+}
+
+ interface BookingCalendarProps {
+  unavailableDates: Date[];
+  venueData: VenueData | null;
+  id: string | string[] | undefined;
+}
+
+export function useBooking(venueData: { maxGuests: any; }, id: string | string[] | undefined) {
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date } | undefined>(undefined);
 
   const handleBooking = async () => {
@@ -10,10 +20,14 @@ export function useBooking(venueData, id) {
       alert("Please select a date range first.");
       return;
     }
-
+  
     const token = getAccessToken();
     const apiKey = getApiKey();
-
+  
+    if (!apiKey) {
+      throw new Error("API key is missing");
+    }
+  
     const response = await fetch(API_BOOKINGS, {
       method: "POST",
       headers: {
@@ -28,11 +42,11 @@ export function useBooking(venueData, id) {
         venueId: id,
       }),
     });
-
+  
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
+  
     const data = await response.json();
     console.log(data);
     window.alert("Booking successful!");

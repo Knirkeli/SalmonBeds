@@ -76,19 +76,13 @@ export async function apiRequest(
     method,
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "X-Noroff-API-Key": apiKey,
+      "X-Noroff-API-Key": apiKey || "", // Ensure apiKey is always a string
       "Content-Type": "application/json",
     },
     body: body ? JSON.stringify(body) : null,
   };
 
-  const response = await fetch(endpoint, {
-    ...options,
-    headers: {
-      ...options.headers,
-      "X-Noroff-API-Key": apiKey || "", // Ensure apiKey is always a string
-    },
-  });
+  const response = await fetch(endpoint, options);
 
   if (!response.ok) {
     throw new Error(`An error has occurred: ${response.status}`);

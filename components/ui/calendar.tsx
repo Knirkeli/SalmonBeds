@@ -9,6 +9,7 @@ import { buttonVariants } from "@/components/ui/button";
 
 interface CalendarProps extends React.ComponentProps<typeof DayPicker> {
   unavailableDates?: Date[];
+  mode?: "range" | "single" | "multiple";
 }
 
 function Calendar({
