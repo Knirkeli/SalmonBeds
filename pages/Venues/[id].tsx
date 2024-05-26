@@ -1,109 +1,31 @@
-// import React, { useState, useEffect } from "react";
-// import { useRouter } from "next/router";
-// import { API_VENUES } from "../../shared/apis";
-// import Navbar from "../../app/components/Navbar";
-// import Footer from "../../app/components/Footer";
-// import "../../app/globals.css";
-
-// const Venue = () => {
-//   const router = useRouter();
-//   const { id } = router.query;
-//   const [venueData, setVenueData] = useState(null);
-
-//   useEffect(() => {
-//     async function fetchVenueData() {
-//       const response = await fetch(`${API_VENUES}/${id}`);
-//       const data = await response.json();
-//       setVenueData(data.data);
-//     }
-
-//     if (id) {
-//       fetchVenueData();
-//     }
-//   }, [id]);
-
-//   if (!venueData) {
-//     return <div>Loading...</div>;
-//   }
-
-//   return (
-//     <>
-//       <Navbar />
-//       <div style={{ padding: "20px" }}>
-//         <h1>{venueData.name}</h1>
-//         <p>{venueData.description}</p>
-//         <p>Price: {venueData.price}</p>
-//         <p>Max Guests: {venueData.maxGuests}</p>
-//         <p>Rating: {venueData.rating}</p>
-//         <p>Address: {venueData.location.address}</p>
-//         <p>City: {venueData.location.city}</p>
-//         <p>Country: {venueData.location.country}</p>
-//         <p>Wifi: {venueData.meta.wifi ? "Yes" : "No"}</p>
-//         <p>Parking: {venueData.meta.parking ? "Yes" : "No"}</p>
-//         <p>Breakfast: {venueData.meta.breakfast ? "Yes" : "No"}</p>
-//         <p>Pets: {venueData.meta.pets ? "Yes" : "No"}</p>
-//         {venueData.media.map((media, index) => (
-//           <img
-//             key={index}
-//             src={media.url}
-//             alt={media.alt}
-//             style={{ width: "100%", height: "auto" }}
-//           />
-//         ))}
-//       </div>
-//       <Footer />
-//     </>
-//   );
-// };
-
-// export default Venue;
-
 import React, { useState, useEffect, FC } from "react";
 import { useRouter } from "next/router";
-import { API_VENUES } from "../../shared/apis";
+import { API_VENUES, API_BOOKINGS } from "../../shared/apis";
+import { Button } from "@/components/ui/button";
 import Navbar from "../../app/components/Navbar";
 import Footer from "../../app/components/Footer";
+import { getAccessToken, getApiKey } from "../../shared/cookies";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../../components/ui/carousel";
+import { Calendar } from "../../components/ui/calendar";
 import "../../app/globals.css";
-
-interface VenueData {
-  name: string;
-  description: string;
-  price: number;
-  maxGuests: number;
-  rating: number;
-  location: {
-    address: string;
-    city: string;
-    country: string;
-  };
-  meta: {
-    wifi: boolean;
-    parking: boolean;
-    breakfast: boolean;
-    pets: boolean;
-  };
-  media: {
-    url: string;
-    alt: string;
-  }[];
-}
+import WeatherIcon from "@/components/ui/weather";
+import { useVenueData } from "../../app/useFetch/useFetchId";
+import { useBooking } from "../../app/hooks/useBooking";
+import BookingCalendar from "../../app/components/BookingCalendar";
+import VenueDetails from "../../app/components/VenueDetails";
 
 const Venue: FC = () => {
   const router = useRouter();
-  const { id } = router.query;
-  const [venueData, setVenueData] = useState<VenueData | null>(null);
-
-  useEffect(() => {
-    async function fetchVenueData() {
-      const response = await fetch(`${API_VENUES}/${id}`);
-      const data = await response.json();
-      setVenueData(data.data);
-    }
-
-    if (id) {
-      fetchVenueData();
-    }
-  }, [id]);
+  const id = Array.isArray(router.query.id)
+    ? router.query.id[0]
+    : router.query.id || "";
+  const { venueData, disabledDates, isLoading } = useVenueData(id);
 
   if (!venueData) {
     return <div>Loading...</div>;
@@ -112,27 +34,46 @@ const Venue: FC = () => {
   return (
     <>
       <Navbar />
-      <div style={{ padding: "20px" }}>
-        <h1>{venueData.name}</h1>
-        <p>{venueData.description}</p>
-        <p>Price: {venueData.price}</p>
-        <p>Max Guests: {venueData.maxGuests}</p>
-        <p>Rating: {venueData.rating}</p>
-        <p>Address: {venueData.location.address}</p>
-        <p>City: {venueData.location.city}</p>
-        <p>Country: {venueData.location.country}</p>
-        <p>Wifi: {venueData.meta.wifi ? "Yes" : "No"}</p>
-        <p>Parking: {venueData.meta.parking ? "Yes" : "No"}</p>
-        <p>Breakfast: {venueData.meta.breakfast ? "Yes" : "No"}</p>
-        <p>Pets: {venueData.meta.pets ? "Yes" : "No"}</p>
-        {venueData.media.map((media, index) => (
-          <img
-            key={index}
-            src={media.url}
-            alt={media.alt}
-            style={{ width: "100%", height: "auto" }}
-          />
-        ))}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 mb-16">
+        <h1 className="text-4xl font-bold mb-4">{venueData.name}</h1>
+        <div className="flex flex-col md:flex-row">
+          <div className="w-full md:w-2/3 pr-4">
+            <Carousel className="w-full pb-6">
+              <CarouselContent>
+                {venueData?.media.map((media, index) => (
+                  <CarouselItem key={index} className="h-full">
+                    <div className="aspect-w-2 aspect-h-1">
+                      <img
+                        src={media.url}
+                        alt={media.alt}
+                        className="w-full h-full object-cover shadow-2xl"
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious>Previous</CarouselPrevious>
+              <CarouselNext>Next</CarouselNext>
+            </Carousel>
+          </div>
+          <div className="w-full md:w-1/3 pl-4 flex flex-col items-center">
+            {!isLoading && (
+              <BookingCalendar
+                unavailableDates={disabledDates}
+                venueData={venueData}
+                id={id}
+              />
+            )}
+          </div>
+        </div>
+        <div className="grid gap-4">
+          <div>
+            <VenueDetails venueData={venueData} />
+          </div>
+        </div>
+      </div>
+      <div className="text-2xl font-semibold mb-2">
+        <WeatherIcon />
       </div>
       <Footer />
     </>

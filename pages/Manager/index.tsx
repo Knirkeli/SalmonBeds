@@ -1,103 +1,122 @@
+// import { useEffect, useState } from "react";
+// import Cookies from "js-cookie";
+// import Router from "next/router";
+// import Footer from "@/app/components/Footer";
+// import Navbar from "@/app/components/Navbar";
+// import "../../app/globals.css";
+// import { useManagerData } from "../../app/hooks/useManagerData";
+// import { MyBookings } from "../../app/components/MyBookings";
+// import { MyVenues } from "../../app/components/MyVenues";
+// import { ProfileInfo } from "../../app/components/UserData";
+// import { API_VENUES, apiRequest } from "@/shared/apis";
+
+// function Manager() {
+//   const { profile, bookings, venues, setVenues } = useManagerData();
+//   const user = JSON.parse(Cookies.get("user") || "{}");
+
+//   const handleDelete = async (id) => {
+//     await apiRequest(`${API_VENUES}/${id}`, "DELETE");
+//     setVenues(venues.filter((venue) => venue.id !== id));
+//   };
+
+//   const handleEdit = (id) => {
+//     Router.push(`/Edit/${id}`);
+//   };
+
+//   if (!profile || !venues) {
+//     return <div>Loading...</div>;
+//   }
+
+//   return (
+//     <>
+//       <Navbar />
+//       <div className="container mx-auto px-4">
+//         <ProfileInfo profile={profile} />
+//         <div className="flex flex-wrap justify-between">
+//           <div
+//             className={`w-full mt-6 ${
+//               user.venueManager ? "md:w-1/2" : "md:w-full"
+//             } mx-auto`}
+//           >
+//             <MyBookings bookings={bookings} />
+//           </div>
+//           {user.venueManager && (
+//             <div className="w-full md:w-1/2">
+//               <MyVenues
+//                 venues={venues}
+//                 handleEdit={handleEdit}
+//                 handleDelete={handleDelete}
+//               />
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//       <Footer />
+//     </>
+//   );
+// }
+
+// export default Manager;
+
 import { useEffect, useState } from "react";
-import { apiRequest, API_PROFILES } from "../../shared/apis";
 import Cookies from "js-cookie";
 import Router from "next/router";
 import Footer from "@/app/components/Footer";
 import Navbar from "@/app/components/Navbar";
 import "../../app/globals.css";
-import { Button, buttonVariants } from "../../components/ui/button";
+import { useManagerData } from "../../app/hooks/useManagerData";
+import { MyBookings } from "../../app/components/MyBookings";
+import { MyVenues } from "../../app/components/MyVenues";
+import { ProfileInfo } from "../../app/components/UserData";
+import { API_VENUES, apiRequest } from "@/shared/apis";
+
+// Update the Venue interface
+interface Venue {
+  id: string;
+}
 
 function Manager() {
-  const [profile, setProfile] = useState(null);
-  const [bookings, setBookings] = useState([]);
-  const [venues, setVenues] = useState([]);
+  const { profile, bookings, venues, setVenues } = useManagerData();
+  const user = JSON.parse(Cookies.get("user") || "{}");
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const userCookie = Cookies.get("user") ?? "";
-      const user = JSON.parse(decodeURIComponent(userCookie));
-      const userName = user.name;
-      const endpoint = `${API_PROFILES}/${userName}`;
-      console.log("userName:", userName);
-      console.log("API endpoint:", endpoint);
-      const data = await apiRequest(endpoint);
-      console.log("Data:", data);
-      setProfile(data.data);
-    };
+  // Update the type of id in handleDelete
+  const handleDelete = async (id: string) => {
+    await apiRequest(`${API_VENUES}/${id}`, "DELETE");
+    setVenues(venues.filter((venue: Venue) => venue.id !== id));
+  };
 
-    const fetchBookings = async () => {
-      const userCookie = Cookies.get("user");
-      const user = JSON.parse(decodeURIComponent(userCookie));
-      const userName = user.name;
-      const endpoint = `${API_PROFILES}/${userName}/bookings?_venue=true`;
-      const data = await apiRequest(endpoint);
-      setBookings(data.data);
-    };
+  // Update the type of id in handleEdit
+  const handleEdit = (id: string) => {
+    Router.push(`/Edit/${id}`);
+  };
 
-    const fetchVenues = async () => {
-      const userCookie = Cookies.get("user");
-      const user = JSON.parse(decodeURIComponent(userCookie));
-      const userName = user.name;
-      const endpoint = `${API_PROFILES}/${userName}/venues`;
-      const data = await apiRequest(endpoint);
-      setVenues(data.data);
-    };
-
-    fetchProfile();
-    fetchBookings();
-    fetchVenues();
-  }, []);
-
-  if (!profile) {
+  if (!profile || !venues) {
     return <div>Loading...</div>;
   }
 
   return (
     <>
       <Navbar />
-      <div>
-        <h1>{profile.name}</h1>
-        <p>{profile.email}</p>
-        <img
-          src={profile.avatar.url}
-          alt={profile.avatar.alt}
-          height={150}
-          width={150}
-        />
-        <p>{profile.bio}</p>
-        <h3>My Bookings</h3>
-        {bookings.length > 0 ? (
-          bookings.map((booking) => (
-            <div key={booking.id}>
-              <p>Venue: {booking.venue.name}</p>
-              <p>Start Date: {booking.dateFrom}</p>
-            </div>
-          ))
-        ) : (
-          <div>
-            <p>No bookings yet</p>
-            <Button onClick={() => Router.push("/Venues")}>Find a venue</Button>
+      <div className="container mx-auto px-4">
+        <ProfileInfo profile={profile} />
+        <div className="flex flex-wrap justify-between">
+          <div
+            className={`w-full mt-6 ${
+              user.venueManager ? "md:w-1/2" : "md:w-full"
+            } mx-auto`}
+          >
+            <MyBookings bookings={bookings} />
           </div>
-        )}
-        <h3>My Venues</h3>
-        {venues.length > 0 ? (
-          venues.map((venue) => (
-            <div key={venue.id}>
-              <h4>{venue.name}</h4>
-              {venue.media.length > 0 && (
-                <img
-                  src={venue.media[0].url}
-                  alt={venue.media[0].alt}
-                  height={150}
-                  width={150}
-                />
-              )}
+          {user.venueManager && (
+            <div className="w-full md:w-1/2">
+              <MyVenues
+                venues={venues}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+              />
             </div>
-          ))
-        ) : (
-          <p>No venues yet</p>
-        )}
-        <Button onClick={() => Router.push("/Create")}>Add a venue</Button>
+          )}
+        </div>
       </div>
       <Footer />
     </>
