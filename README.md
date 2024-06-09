@@ -1,5 +1,7 @@
 # SalmonBeds (Holidaze)
 
+![Accomodation site](/public/SalmonVenue.png)
+
 SalmonBeds is a modern front-end accommodation booking application developed for Holidaze. It includes features such as creating, editing, and fetching venue details, as well as managing bookings.
 
 ## Project Brief
@@ -34,10 +36,6 @@ These instructions will get you a copy of the project up and running on your loc
 - [Next.js](https://nextjs.org/)
 - [React](https://reactjs.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
-
-## Contributing
-
-Reach out if you would like to contribute!
 
 ## Authors
 
